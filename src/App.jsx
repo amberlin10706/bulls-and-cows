@@ -138,7 +138,10 @@ export default function App() {
           <option value={5}>5 位數</option>
         </select>
       </div>
-      <div>
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+      }}>
         {
           digits.map((val, i) => (
             <input
@@ -165,7 +168,10 @@ export default function App() {
         {[...logs]
           .reverse()
           .map((log, i) => (
-            <li key={i}>
+            <li key={i} style={{
+              fontFamily: "monospace",
+              fontSize: "1rem",
+            }}>
               第 {logs.length - i} 次：{log.guess} → {log.result}
             </li>
           ))}
