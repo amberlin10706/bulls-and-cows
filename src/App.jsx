@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
+import confetti from "canvas-confetti";
 
 function generateAnswer(length) {
   const digits = [];
@@ -93,7 +94,11 @@ export default function App() {
 
     if (result === `${size}A0B`) {
       setFinished(true);
-      alert("🎉 恭喜你猜對了！");
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+      });
     } else {
       // 聚焦到第一個輸入框
       inputsRef.current[0].focus();
@@ -142,9 +147,10 @@ export default function App() {
               onChange={(e) => handleChange(e.target.value, i)}
               onKeyDown={(e) => handleKeyDown(e, i)}
               disabled={finished}
+              inputMode={"numeric"}
               style={{
-                width: "3rem",
-                height: "3rem",
+                width: "40px",
+                height: "40px",
                 fontSize: "1.5rem",
                 textAlign: "center",
                 border: "1px solid #ccc",
@@ -166,7 +172,7 @@ export default function App() {
         ))}
       </ul>
 
-      {finished && <p>答案是：{answer.join("")}</p>}
+      {finished && <p>🎉 恭喜你猜對了！答案是：{answer.join("")}</p>}
 
       {finished && <button onClick={handleRestart}>重新開始</button>}
     </div>
