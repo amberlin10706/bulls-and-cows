@@ -131,7 +131,7 @@ export default function App() {
             padding: "0.3rem 0.6rem",
             borderRadius: "6px",
             border: "1px solid #ccc"
-        }}
+          }}
         >
           <option value={3}>3 位數</option>
           <option value={4}>4 位數</option>
@@ -157,17 +157,19 @@ export default function App() {
 
       <button onClick={handleSubmit} disabled={finished}>猜！</button>
 
-      <ul>
-        {logs.map((log, i) => (
-          <li key={i}>
-            第 {i + 1} 次：{log.guess} → {log.result}
-          </li>
-        ))}
-      </ul>
-
       {finished && <p>🎉 恭喜你猜對了！答案是：{answer.join("")}</p>}
 
       {finished && <button onClick={handleRestart}>重新開始</button>}
+
+      <ul>
+        {[...logs]
+          .reverse()
+          .map((log, i) => (
+            <li key={i}>
+              第 {logs.length - i} 次：{log.guess} → {log.result}
+            </li>
+          ))}
+      </ul>
     </div>
   );
 }
