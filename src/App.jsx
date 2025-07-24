@@ -142,6 +142,7 @@ export default function App() {
         {
           digits.map((val, i) => (
             <input
+              name={`digit-${i}`}
               key={i}
               ref={(el) => (inputsRef.current[i] = el)}
               value={val}
@@ -149,15 +150,6 @@ export default function App() {
               onKeyDown={(e) => handleKeyDown(e, i)}
               disabled={finished}
               inputMode={"numeric"}
-              style={{
-                width: "40px",
-                height: "40px",
-                fontSize: "1.5rem",
-                textAlign: "center",
-                border: "1px solid #ccc",
-                borderRadius: "8px",
-                margin: "0 0.2rem",
-              }}
             />
           ))
         }
