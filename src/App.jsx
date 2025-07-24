@@ -123,6 +123,7 @@ export default function App() {
       }}>
         <h1>猜數字遊戲</h1>
         <select
+          name="size-select"
           value={size}
           onChange={(e) => setSize(parseInt(e.target.value))}
           style={{
