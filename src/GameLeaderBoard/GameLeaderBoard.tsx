@@ -1,3 +1,5 @@
+import { formatTime } from "../utils/formatTime";
+
 export type LeaderboardResponse = {
   id: number;
   name: string;
@@ -9,13 +11,6 @@ export type LeaderboardResponse = {
 
 interface GameLeaderBoardProps {
   leaderboard: LeaderboardResponse[];
-}
-
-function formatTime(second: number): string {
-  const minutes = Math.floor(second / 60);
-  const seconds = second % 60;
-
-  return `${String(minutes).padStart(2, "0")}分${String(seconds).padStart(2, "0")}秒`;
 }
 
 export default function GameLeaderBoard({ leaderboard }: GameLeaderBoardProps) {
@@ -48,7 +43,7 @@ export default function GameLeaderBoard({ leaderboard }: GameLeaderBoardProps) {
         ))}
       </div>
       <div className="mt-3 text-sm text-gray-600">
-        <div>*排名計算方式</div>
+        <div>*排名計算方式(只取前五名)</div>
         <div>每猜一次多10分，每過10秒多1分。</div>
         <div>分數越低排名越高，若分數相同則按時間排序。</div>
       </div>

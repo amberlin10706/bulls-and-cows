@@ -2,11 +2,13 @@ import confetti from "canvas-confetti";
 import React, { useEffect, useRef, useState } from "react";
 import "./App.css";
 import { getLeaderboards } from "./api/leaderboard.js";
+import { useCountdown } from "./composable/useCountdown.js";
 import GameLeaderBoard from "./GameLeaderBoard/GameLeaderBoard.tsx";
 import GameSaveRecord from "./GameSaveRecord/GameSaveRecord.js";
 import Header from "./header/Header.js";
 import Modal from "./Modal/Modal.js";
 import { calculateScore } from "./utils/calculateScore.js";
+import { formatTime } from "./utils/formatTime.js";
 
 function generateAnswer(length) {
   const digits = [];
@@ -111,6 +113,8 @@ export default function App() {
       return;
     }
 
+    startTimer();
+
     const result = getResult(answer, digits.map(Number));
     const newLog = { guess: digits, result };
 
@@ -120,18 +124,24 @@ export default function App() {
 
     if (result === `${size}A0B`) {
       setFinished(true);
-      const score = calculateScore({ guesses: newLogs.length, time: 0 }); // 計算分數
-      const lastScore = leaderboard[leaderboard.length - 1]?.score;
-
-      if (lastScore && score < lastScore) {
-        // 如果新分數比最後一個分數低，則更新排行榜
-        setIsOpenSaveRecord(true);
-      }
+      stopTimer();
       confetti({
         particleCount: 100,
         spread: 70,
         origin: { y: 0.6 },
       });
+
+      const score = calculateScore({ guesses: newLogs.length, time: 0 }); // 計算分數
+
+      if (leaderboard.length >= 5) {
+        const lastScore = leaderboard[leaderboard.length - 1]?.score;
+        if (score >= lastScore) {
+          // 如果分數沒小於第五名則不開啟保存記錄的對話框
+          return;
+        }
+      }
+
+      setIsOpenSaveRecord(true);
     } else {
       // 聚焦到第一個輸入框
       inputsRef.current[0].focus();
@@ -143,7 +153,10 @@ export default function App() {
     setDigits(Array(size).fill(""));
     setLogs([]);
     setFinished(false);
+    resetTimer();
   };
+
+  const { time, startTimer, stopTimer, resetTimer } = useCountdown();
 
   return (
     <div className="flex flex-col items-center">
@@ -160,8 +173,10 @@ export default function App() {
         showClose={false}
       >
         <GameSaveRecord
+          time={time}
           guesses={logs.length}
           fetchLeaderboard={fetchLeaderboard}
+          openLeaderboard={() => setIsOpenBoard(true)}
           closeModal={() => setIsOpenSaveRecord(false)}
         />
       </Modal>
@@ -234,7 +249,10 @@ export default function App() {
           重新開始
         </button>
       )}
-
+      <div className="mb-4">
+        開始計時：
+        <span className="font-mono">{formatTime(time)}</span>
+      </div>
       <ul>
         {[...logs].reverse().map((log, i) => (
           <li

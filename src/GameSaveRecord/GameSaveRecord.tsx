@@ -6,19 +6,22 @@ const LOCAL_STORAGE_KEY = "bulls-and-cows-game-record-name";
 
 interface GameSaveRecordProps {
   guesses: number;
+  time: number;
   closeModal: () => void;
   fetchLeaderboard: () => void;
+  openLeaderboard: () => void;
 }
 
 export default function GameSaveRecord({
   guesses,
+  time,
   closeModal,
   fetchLeaderboard,
+  openLeaderboard,
 }: GameSaveRecordProps) {
   const [name, setName] = useState("");
 
   const handleSubmitScore = async () => {
-    const time = 0; // todo
     const score = calculateScore({ guesses, time }); // 計算分數
     try {
       await submitScore({
@@ -27,9 +30,11 @@ export default function GameSaveRecord({
         time,
         score,
       });
-
-      fetchLeaderboard();
       closeModal();
+      fetchLeaderboard();
+      setTimeout(() => {
+        openLeaderboard();
+      }, 200);
       localStorage.setItem(LOCAL_STORAGE_KEY, name);
     } catch (error) {
       alert("提交失敗：" + error.message);
