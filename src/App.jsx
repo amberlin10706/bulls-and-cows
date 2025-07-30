@@ -6,6 +6,7 @@ import GameLeaderBoard from "./GameLeaderBoard/GameLeaderBoard.tsx";
 import GameSaveRecord from "./GameSaveRecord/GameSaveRecord.js";
 import Header from "./header/Header.js";
 import Modal from "./Modal/Modal.js";
+import { calculateScore } from "./utils/calculateScore.js";
 
 function generateAnswer(length) {
   const digits = [];
@@ -113,12 +114,19 @@ export default function App() {
     const result = getResult(answer, digits.map(Number));
     const newLog = { guess: digits, result };
 
-    setLogs([...logs, newLog]);
+    const newLogs = [...logs, newLog];
+    setLogs(newLogs);
     setDigits(Array(size).fill(""));
 
     if (result === `${size}A0B`) {
       setFinished(true);
-      setIsOpenSaveRecord(true); // todo 打開保存記錄
+      const score = calculateScore({ guesses: newLogs.length, time: 0 }); // 計算分數
+      const lastScore = leaderboard[leaderboard.length - 1]?.score;
+
+      if (lastScore && score < lastScore) {
+        // 如果新分數比最後一個分數低，則更新排行榜
+        setIsOpenSaveRecord(true);
+      }
       confetti({
         particleCount: 100,
         spread: 70,
@@ -139,7 +147,11 @@ export default function App() {
 
   return (
     <div className="flex flex-col items-center">
-      <Modal isOpen={isOpenBoard} onClose={() => setIsOpenBoard(false)}>
+      <Modal
+        title="排行榜"
+        isOpen={isOpenBoard}
+        onClose={() => setIsOpenBoard(false)}
+      >
         <GameLeaderBoard leaderboard={leaderboard} />
       </Modal>
       <Modal
