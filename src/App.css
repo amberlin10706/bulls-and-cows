@@ -1,28 +1,28 @@
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 button {
-    margin: 1rem;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    cursor: pointer;
-    background-color: #3F7FD7;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    width: 100px;
+  margin: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  background-color: #3f7fd7;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  width: 100px;
 }
 
 input {
-    width: 3.5rem;
-    height: 3.5rem;
-    font-size: 1.5rem;
-    text-align: center;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    margin: 0 0.2rem;
-    box-sizing: border-box;
+  width: 3.5rem;
+  height: 3.5rem;
+  font-size: 1.5rem;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin: 0 0.2rem;
+  box-sizing: border-box;
 }
