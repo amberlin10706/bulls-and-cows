@@ -115,16 +115,19 @@ export default function App() {
 
   return (
     <div className="flex flex-col items-center">
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "1rem",
-          columnGap: "1rem",
-        }}
-      >
-        <h1>猜數字遊戲</h1>
+      <Header
+        title="猜數字遊戲"
+        renderRight={() => (
+          <button
+            className="text-blue-700 font-medium cursor-pointer"
+            onClick={() => setIsOpenBoard(true)}
+          >
+            排行榜
+          </button>
+        )}
+      />
+      <div className="flex justify-between items-center gap-x-4 mb-4 py-4">
+        <div>困難度</div>
         <select
           name="size-select"
           value={size}
