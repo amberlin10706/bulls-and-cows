@@ -114,7 +114,7 @@ export default function App() {
   };
 
   return (
-    <div className="container">
+    <div className="flex flex-col items-center">
       <div
         style={{
           display: "flex",
@@ -161,13 +161,24 @@ export default function App() {
         ))}
       </div>
 
-      <button onClick={handleSubmit} disabled={finished}>
+      <button
+        className="my-4 bg-blue-400 rounded px-4 py-2 font-medium cursor-pointer"
+        onClick={handleSubmit}
+        disabled={finished}
+      >
         猜！
       </button>
 
       {finished && <p>🎉 恭喜你猜對了！答案是：{answer.join("")}</p>}
 
-      {finished && <button onClick={handleRestart}>重新開始</button>}
+      {finished && (
+        <button
+          className="my-4 bg-blue-400 rounded px-4 py-2 font-medium cursor-pointer"
+          onClick={handleRestart}
+        >
+          重新開始
+        </button>
+      )}
 
       <ul>
         {[...logs].reverse().map((log, i) => (
