@@ -18,7 +18,7 @@ export default function GameLeaderBoard({ leaderboard }: GameLeaderBoardProps) {
     <div className="pt-3">
       <div className="space-y-3">
         {leaderboard.map((player, idx) => (
-          <div className="border rounded py-2 px-4 shadow">
+          <div className="border rounded py-2 px-4 shadow" key={player.id}>
             <div>
               <strong>
                 # {idx + 1} {player.name}
