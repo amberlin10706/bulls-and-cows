@@ -1,6 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
-import "./App.css";
 import confetti from "canvas-confetti";
+import React, { useEffect, useRef, useState } from "react";
+import "./App.css";
+import { getLeaderboards } from "./api/leaderboard.js";
+import GameLeaderBoard from "./GameLeaderBoard/GameLeaderBoard.tsx";
+import GameSaveRecord from "./GameSaveRecord/GameSaveRecord.js";
+import Header from "./header/Header.js";
+import Modal from "./Modal/Modal.js";
 
 function generateAnswer(length) {
   const digits = [];
@@ -40,6 +45,24 @@ export default function App() {
   const [answer, setAnswer] = useState([]);
   const [logs, setLogs] = useState([]);
   const [finished, setFinished] = useState(false);
+  const [isOpenBoard, setIsOpenBoard] = useState(false);
+  const [isOpenSaveRecord, setIsOpenSaveRecord] = useState(false);
+
+  const [leaderboard, setLeaderboard] = useState([]);
+
+  const fetchLeaderboard = async () => {
+    try {
+      const data = await getLeaderboards();
+      setLeaderboard(data);
+    } catch (error) {
+      console.error("Error fetching leaderboard:", error);
+      alert("無法獲取排行榜，請稍後再試。");
+    }
+  };
+
+  useEffect(() => {
+    fetchLeaderboard().catch();
+  }, []);
 
   useEffect(() => {
     setAnswer(generateAnswer(size));
@@ -95,6 +118,7 @@ export default function App() {
 
     if (result === `${size}A0B`) {
       setFinished(true);
+      setIsOpenSaveRecord(true); // todo 打開保存記錄
       confetti({
         particleCount: 100,
         spread: 70,
@@ -115,6 +139,21 @@ export default function App() {
 
   return (
     <div className="flex flex-col items-center">
+      <Modal isOpen={isOpenBoard} onClose={() => setIsOpenBoard(false)}>
+        <GameLeaderBoard leaderboard={leaderboard} />
+      </Modal>
+      <Modal
+        isOpen={isOpenSaveRecord}
+        onClose={() => setIsOpenSaveRecord(false)}
+        showClose={false}
+      >
+        <GameSaveRecord
+          guesses={logs.length}
+          fetchLeaderboard={fetchLeaderboard}
+          closeModal={() => setIsOpenSaveRecord(false)}
+        />
+      </Modal>
+
       <Header
         title="猜數字遊戲"
         renderRight={() => (
@@ -152,6 +191,7 @@ export default function App() {
       >
         {digits.map((val, i) => (
           <input
+            className="digit-input"
             name={`digit-${i}`}
             key={i}
             ref={(el) => (inputsRef.current[i] = el)}
