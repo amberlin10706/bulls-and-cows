@@ -1,5 +1,5 @@
 import confetti from "canvas-confetti";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
 import { getLeaderboards } from "./api/leaderboard.js";
 import { useCountdown } from "./composable/useCountdown.js";
@@ -66,12 +66,6 @@ export default function App() {
   useEffect(() => {
     fetchLeaderboard().catch();
   }, []);
-
-  useEffect(() => {
-    setAnswer(generateAnswer(size));
-    setDigits(Array(size).fill(""));
-    setLogs([]);
-  }, [size]);
 
   const handleChange = (value, index) => {
     const digit = value.slice(-1); // 只取最後一個字符
@@ -148,15 +142,19 @@ export default function App() {
     }
   };
 
-  const handleRestart = () => {
+  const { time, startTimer, stopTimer, resetTimer } = useCountdown();
+
+  const handleRestart = useCallback(() => {
     setAnswer(generateAnswer(size));
     setDigits(Array(size).fill(""));
     setLogs([]);
     setFinished(false);
     resetTimer();
-  };
+  }, [size, resetTimer]);
 
-  const { time, startTimer, stopTimer, resetTimer } = useCountdown();
+  useEffect(() => {
+    handleRestart();
+  }, [handleRestart, size]);
 
   return (
     <div className="flex flex-col items-center">
@@ -182,7 +180,24 @@ export default function App() {
       </Modal>
 
       <Header
-        title="猜數字遊戲"
+        title="猜數字"
+        renderLeft={() => (
+          <select
+            name="size-select"
+            value={size}
+            onChange={(e) => setSize(parseInt(e.target.value))}
+            style={{
+              fontSize: "1rem",
+              padding: "0.3rem 0.6rem",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+            }}
+          >
+            <option value={3}>3 位數</option>
+            <option value={4}>4 位數</option>
+            <option value={5}>5 位數</option>
+          </select>
+        )}
         renderRight={() => (
           <button
             className="text-blue-700 font-medium cursor-pointer"
@@ -192,24 +207,7 @@ export default function App() {
           </button>
         )}
       />
-      <div className="flex justify-between items-center gap-x-4">
-        <div>困難度</div>
-        <select
-          name="size-select"
-          value={size}
-          onChange={(e) => setSize(parseInt(e.target.value))}
-          style={{
-            fontSize: "1rem",
-            padding: "0.3rem 0.6rem",
-            borderRadius: "6px",
-            border: "1px solid #ccc",
-          }}
-        >
-          <option value={3}>3 位數</option>
-          <option value={4}>4 位數</option>
-          <option value={5}>5 位數</option>
-        </select>
-      </div>
+
       <div className="pt-5">
         <div className="mb-4 text-center">
           開始計時：
