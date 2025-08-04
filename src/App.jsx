@@ -125,6 +125,8 @@ export default function App() {
         origin: { y: 0.6 },
       });
 
+      if (size === 3) return; // 如果是 3 位數則不開啟保存記錄的對話框
+
       const score = calculateScore({ guesses: newLogs.length, time: 0 }); // 計算分數
 
       if (leaderboard.length >= 5) {
