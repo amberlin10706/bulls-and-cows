@@ -192,7 +192,7 @@ export default function App() {
           </button>
         )}
       />
-      <div className="flex justify-between items-center gap-x-4 mb-4 py-4">
+      <div className="flex justify-between items-center gap-x-4">
         <div>困難度</div>
         <select
           name="size-select"
@@ -210,25 +210,48 @@ export default function App() {
           <option value={5}>5 位數</option>
         </select>
       </div>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        {digits.map((val, i) => (
-          <input
-            className="digit-input"
-            name={`digit-${i}`}
-            key={i}
-            ref={(el) => (inputsRef.current[i] = el)}
-            value={val}
-            onChange={(e) => handleChange(e.target.value, i)}
-            onKeyDown={(e) => handleKeyDown(e, i)}
-            disabled={finished}
-            inputMode={"numeric"}
-          />
-        ))}
+      <div className="pt-5">
+        <div className="mb-4 text-center">
+          開始計時：
+          <span className="font-mono">{formatTime(time)}</span>
+        </div>
+
+        <div className="mb-4 text-center">
+          <ul>
+            {logs.map((log, idx) => (
+              <li
+                key={idx}
+                style={{
+                  fontFamily: "monospace",
+                  fontSize: "1rem",
+                }}
+              >
+                <span className="w-16 inline-flex justify-between">
+                  <span>第</span>
+                  <span>{idx + 1}</span>
+                  <span>次</span>
+                </span>
+                ：{log.guess} → {log.result}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="flex items-center">
+          {digits.map((val, i) => (
+            <input
+              className="digit-input"
+              name={`digit-${i}`}
+              key={i}
+              ref={(el) => (inputsRef.current[i] = el)}
+              value={val}
+              onChange={(e) => handleChange(e.target.value, i)}
+              onKeyDown={(e) => handleKeyDown(e, i)}
+              disabled={finished}
+              inputMode={"numeric"}
+            />
+          ))}
+        </div>
       </div>
 
       <button
@@ -239,33 +262,20 @@ export default function App() {
         猜！
       </button>
 
-      {finished && <p>🎉 恭喜你猜對了！答案是：{answer.join("")}</p>}
+      {finished && (
+        <p>
+          🎉 恭喜你猜對了！答案是：<b>{answer.join("")}</b>
+        </p>
+      )}
 
       {finished && (
         <button
-          className="my-4 bg-blue-400 rounded px-4 py-2 font-medium cursor-pointer"
+          className="my-4 bg-red-400 rounded px-4 py-2 font-medium cursor-pointer"
           onClick={handleRestart}
         >
           重新開始
         </button>
       )}
-      <div className="mb-4">
-        開始計時：
-        <span className="font-mono">{formatTime(time)}</span>
-      </div>
-      <ul>
-        {[...logs].reverse().map((log, i) => (
-          <li
-            key={i}
-            style={{
-              fontFamily: "monospace",
-              fontSize: "1rem",
-            }}
-          >
-            第 {logs.length - i} 次：{log.guess} → {log.result}
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }
